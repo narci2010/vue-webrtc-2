@@ -1,6 +1,6 @@
 <template>
   <div class="main-section">
-    main page！
+    <router-view transition="fade" transition-mode="out-in"></router-view>
   </div>
 </template>
 <script>

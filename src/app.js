@@ -4,6 +4,10 @@ import Vue from 'vue/dist/vue.js'
 import router from '@/routes/'
 import App from '@/components/App'
 import store from './store'
+import Message from 'vue-simple-notification'
+import 'vue-simple-notification/dist/style.css'
+
+Vue.prototype.$Message = Message
 
 
 // 挂载到 DOM，自此外部就可通过 router.app 访问到根组件

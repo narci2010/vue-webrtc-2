@@ -11,10 +11,13 @@
     "crypto": "^1.0.1",
     "es6-shim": "^0.35.2",
     "express": "^4.13.3",
+    "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "socket.io-client": "^2.0.4",
     "vue": "^2.4.2",
     "vue-loader": "^8.0.0",
     "vue-router": "^2.4.0",
+    "vue-simple-notification": "^2.0.2",
     "vuex": "^2.4.0"
   },
   "devDependencies": {

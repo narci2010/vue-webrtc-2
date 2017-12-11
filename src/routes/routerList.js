@@ -22,6 +22,14 @@ export default [
     component (resolve) {
       require(['@/views/'], resolve)
     },
-    children: []
+    children: [
+      {
+        path: '/message-list',
+        name: 'message-list',
+        component (resolve) {
+          require(['@/views/messageList/'], resolve)
+        }
+      }
+    ]
   }
 ]
