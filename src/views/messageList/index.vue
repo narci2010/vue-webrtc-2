@@ -1,12 +1,26 @@
 <template>
   <div class="message-page-section">
     <div class="message-list-section">
-      <div class="message-item" v-for="(msg, index) in messageList" :key="index">
-        {{ msg.name }}:{{ msg.message }}
+      <div
+        class="message-item"
+        v-for="(msg, index) in messageList"
+        :key="index"
+        :class="{ 'is-yours': msg.userId === userId }"
+      >
+        <img
+          src="https://ashshen.cc/wp-content/uploads/2017/03/app-icon180180.png"
+          class="user-img"
+        />
+        <div class="message-content">
+          <span
+            v-for="(content, index) in msg.message.split('\n')"
+            :key="index"
+          >{{ content }}<br></span>
+        </div>
       </div>
     </div>
     <div class="input-section">
-      <textarea v-model="message" class="textarea"></textarea>
+      <textarea v-model="message" ref="msgInput" class="textarea"></textarea>
       <button @click="sendMsg" class="send-msg">send</button>
     </div>
   </div>
@@ -18,6 +32,7 @@ export default {
   data() {
     return {
       socketCxt: getCxt(),
+      userId: null,
       message: '',
       messageList: []
     }
@@ -34,6 +49,7 @@ export default {
         const userInfo = JSON.parse(localStorage.userInfo || '{}')
 
         this.$Message.success('socket conn success')
+        this.userId = userInfo.id
         this.socketCxt.registerUser(userInfo.id, userInfo.username)
         this.socketCxt.receiveMsg(this.receiveMsg)
       })
@@ -49,6 +65,7 @@ export default {
         message
       })
       this.message = ''
+      this.$refs.msgInput.focus()
     },
     receiveMsg(msg) {
       this.messageList.push(msg)
@@ -66,6 +83,10 @@ export default {
   border-radius: 4px;
   position: relative;
 
+  .message-list-section {
+    padding: 10px 10px 0 10px;
+  }
+
   .input-section {
     position: absolute;
     bottom: 0;
@@ -73,6 +94,7 @@ export default {
     height: 60px;
     border-top: 1px solid #ddd;
     padding: 10px 0;
+    background-color: #fff;
 
     .textarea {
       width: 100%;
@@ -90,6 +112,7 @@ export default {
       top: 14px;
       right: 20px;
       width: 60px;
+      border: 1px solid #ddd;
       border-radius: 3px;
       background-color: #fff;
       outline: none;
@@ -98,6 +121,84 @@ export default {
       background-color: #f5f5f5;
       border-color: #ddd;
       box-shadow: none;
+    }
+  }
+
+  .message-item {
+    margin-bottom: 10px;
+    word-break: break-all;
+
+    .user-img {
+      width: 35px;
+      height: 35px;
+    }
+
+    .message-content {
+      position: relative;
+      display: inline-block;
+      margin-left: 10px;
+      max-width: 60%;
+      min-height: 35px;
+      vertical-align: top;
+      padding: 7px 10px;
+      line-height: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .message-content:before {
+      content: '';
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border: 1px solid #ddd;
+      border-right: none;
+      border-top: none;
+      left: -5px;
+      top: 12px;
+      transform: rotate(45deg);
+      background-color: #fff;
+    }
+
+    &.is-yours {
+      color: #2c3e50;
+      transform: rotate(180deg);
+
+      .user-img, .message-content {
+        transform: rotate(180deg);
+      }
+
+      .message-content {
+        background-color: #a2e563;
+        vertical-align: bottom;
+        margin-bottom: 3px;
+      }
+
+      .message-content:before {
+        left: auto;
+        right: -5px;
+        transform: rotate(225deg);
+        background-color: #a2e563;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .message-page-section {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+
+    .message-list-section {
+      padding: 10px 10px 80px 10px;
+    }
+
+    .input-section {
+      position: fixed;
+      bottom: 0;
     }
   }
 }
