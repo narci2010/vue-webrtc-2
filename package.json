@@ -2,13 +2,20 @@
   "name": "vue-webrtc",
   "description": "vue webrtc object",
   "version": "1.0.0",
+  "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development node build/dev.js",
-    "build": "cross-env NODE_ENV=production node build/prod.js"
+    "build": "cross-env NODE_ENV=production node build/prod.js",
+    "electron": "electron .",
+    "pack": "electron-packager ./dist vuertc --platfrom=all",
+    "pack-mac": "electron-packager ./dist vuertc --platfrom=darwin",
+    "pack-win32": "electron-packager ./dist vuertc --platfrom=win32",
+    "pack-linux": "electron-packager ./dist vuertc --platfrom=linux"
   },
   "dependencies": {
     "axios": "^0.16.2",
     "crypto": "^1.0.1",
+    "electron": "^1.7.9",
     "es6-shim": "^0.35.2",
     "express": "^4.13.3",
     "lodash": "^4.17.4",
