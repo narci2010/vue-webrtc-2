@@ -18,6 +18,17 @@ class AccountService {
     })
   }
 
+  /**
+   * 获取用户图片
+   * @param  {String} userId
+   */
+  getUserImage (userId) {
+    return xhr({
+      url: '/auth/getUserImage',
+      body: { userId }
+    })
+  }
+
 }
 
 // 实例化后导出，全局单例
