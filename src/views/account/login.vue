@@ -24,10 +24,11 @@
   </div>
 </template>
 <script>
+import * as types from '@/store/types/accountTypes'
+
 export default {
   data: () =>({
     formData: {
-      id: new Date().getTime(),
       username: '',
       password: ''
     }
@@ -39,8 +40,23 @@ export default {
       if (!username || !password) {
         return this.$Message.error('请输入用户名和密码')
       }
-      localStorage.userInfo = JSON.stringify(this.formData)
-      this.$router.push('/message-list')
+      this.$store
+        .dispatch(types.LOGIN_REQUEST, this.formData)
+        .then((res) => {
+          const { data } = res
+          const userImages = JSON.parse(localStorage.userImages || '{}')
+
+          userImages[data.userId] = data.userImage
+          localStorage.currentUser = JSON.stringify({
+            userId: data.userId,
+            username
+          })
+          localStorage.userImages = JSON.stringify(userImages)
+
+          this.$router.push('/message-list')
+        }, (err) => {
+          console.log(err)
+        })
     }
   },
 

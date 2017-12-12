@@ -8,7 +8,7 @@
         :class="{ 'is-yours': msg.userId === userId }"
       >
         <img
-          src="https://ashshen.cc/wp-content/uploads/2017/03/app-icon180180.png"
+          :src="userImages[msg.userId]"
           class="user-img"
         />
         <div class="message-content">
@@ -27,6 +27,7 @@
 </template>
 <script>
 import getCxt from '@/components/socket/'
+import * as types from '@/store/types/accountTypes'
 
 export default {
   data() {
@@ -34,23 +35,24 @@ export default {
       socketCxt: getCxt(),
       userId: null,
       message: '',
-      messageList: []
+      messageList: JSON.parse(localStorage.messageList || '[]'),
+      userImages: JSON.parse(localStorage.userImages || '{}')
     }
   },
 
   created() {
-    if (!localStorage.userInfo) {
+    if (!localStorage.currentUser) {
       return this.$router.push('/login')
     }
 
     this.socketCxt
       .createConnection()
       .then(() => {
-        const userInfo = JSON.parse(localStorage.userInfo || '{}')
+        const currentUser = JSON.parse(localStorage.currentUser || '{}')
 
-        this.$Message.success('socket conn success')
-        this.userId = userInfo.id
-        this.socketCxt.registerUser(userInfo.id, userInfo.username)
+        // this.$Message.success('socket conn success')
+        this.userId = currentUser.userId
+        this.socketCxt.registerUser(currentUser.userId, currentUser.username)
         this.socketCxt.receiveMsg(this.receiveMsg)
       })
   },
@@ -68,9 +70,26 @@ export default {
       this.$refs.msgInput.focus()
     },
     receiveMsg(msg) {
-      this.messageList.push(msg)
+      const { userImages } = this
+      if (!userImages[msg.userId]) {
+        this.$store
+          .dispatch(types.GET_USER_IMAGE_REQUEST, msg.userId)
+          .then(res => {
+            userImages[msg.userId] = res.userImage
+
+            this.userImages = userImages
+            localStorage.userImages = JSON.stringify(userImages)
+
+            this.messageList.push(msg)
+          })
+      } else {
+        this.messageList.push(msg)
+      }
+      localStorage.messageList = JSON.stringify(this.messageList || [])
     }
   }
+
+
 }
 </script>
 <style lang="scss">
@@ -104,6 +123,7 @@ export default {
       padding: 0 100px 0 10px;
       border: none;
       outline: none;
+      font-size: 14px;
     }
 
     .send-msg {
@@ -116,6 +136,7 @@ export default {
       border-radius: 3px;
       background-color: #fff;
       outline: none;
+      font-size: 14px;
     }
     .send-msg:focus, .send-msg:active {
       background-color: #f5f5f5;
@@ -144,6 +165,7 @@ export default {
       line-height: 20px;
       border: 1px solid #ddd;
       border-radius: 4px;
+      font-size: 14px;
     }
 
     .message-content:before {
