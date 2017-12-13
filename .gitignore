@@ -4,6 +4,7 @@ db.json
 .vscode/
 
 releases/
+dist/
 
 *.log
 coverage
