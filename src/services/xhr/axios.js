@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from '@/routes/'
 
-const rootPath = 'http://ashshen.10000/' // 后端 API 根路径
+const rootPath = '/api' // 后端 API 根路径
 
 const xhr = ({ method = 'get', url, body = null }) => {
 
