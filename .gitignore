@@ -2,7 +2,12 @@ db.json
 .DS_Store
 .idea/
 .vscode/
+
+releases/
+
 *.log
 coverage
 node_modules
+
+package-lock.json
 
