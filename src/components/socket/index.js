@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import Context from './context'
 
-let socketUrl = 'http://ashshen.cc:10010/'
+let socketUrl = 'http://localhost:10010/'
 let cxt = null
 
 export default function getCxt() {

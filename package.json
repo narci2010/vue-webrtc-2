@@ -6,11 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node build/dev.js",
     "build": "cross-env NODE_ENV=production node build/prod.js",
-    "electron": "electron .",
-    "pack": "electron-packager ./app vuertc --platfrom=all",
-    "pack-mac": "electron-packager ./app vuertc --platfrom=darwin",
-    "pack-win32": "electron-packager ./app vuertc --platfrom=win32",
-    "pack-linux": "electron-packager ./app vuertc --platfrom=linux"
+    "electron": "electron ."
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -19,7 +15,6 @@
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
     "electron": "^1.7.9",
-    "electron-packager": "^10.1.0",
     "es6-shim": "^0.35.2",
     "express": "^4.13.3",
     "lodash": "^4.17.4",
