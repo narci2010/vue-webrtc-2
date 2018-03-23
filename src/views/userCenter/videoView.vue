@@ -51,6 +51,7 @@ export default {
         audio
       }, stream => {
         videoTag.srcObject = stream
+        videoTag.volume = 0
 
         peerConn.addStream(stream)
       }, err => {
