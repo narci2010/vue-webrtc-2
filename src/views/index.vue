@@ -1,10 +1,13 @@
 <template>
-  <div class="main-section">
+  <div class="app-section">
     <router-view transition="fade" transition-mode="out-in"></router-view>
   </div>
 </template>
 <script>
 
 export default {
+
+  created() {
+  }
 }
 </script>

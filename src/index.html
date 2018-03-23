@@ -2,9 +2,10 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>web rtc test</title>
-  <link rel="shortcut icon" href="https://ashshen.cc/wp-content/uploads/2017/03/app-icon180180.png">
+  <title>webrtc test</title>
+  <link rel="shortcut icon" href="static/favicon.ico">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+  <meta name="renderer" content="webkit">
   <!-- build:css static/bundle/plugins.css -->
   <!-- endbuild -->
   {% for (var css in o.htmlWebpackPlugin.files.css) { %}
@@ -18,6 +19,7 @@
 <!-- build:js static/bundle/plugins.js -->
 <script src="static/plugins/moment.min.js"></script>
 <script src="static/plugins/axios.min.js"></script>
+<script src="static/plugins/socket.io.slim.js"></script>
 <!-- endbuild -->
 {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
 <script src="{%=o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>

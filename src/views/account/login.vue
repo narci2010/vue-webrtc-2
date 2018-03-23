@@ -1,126 +1,100 @@
 <template>
   <div class="login-content">
-    <div class="login-form">
-      <input
-        class="form-input"
-        type="text"
-        v-model="formData.username"
-        placeholder="Username"
-        maxlength="20"
-      />
-      <input
-        class="form-input"
-        type="password"
-        v-model="formData.password"
-        placeholder="Password"
-        maxlength="20"
-      />
-      <button
-        class="form-btn"
-        @click="login"
-        :disabled="!formData.username || !formData.password"
-      >login</button>
+    <div class="login-body">
+      <h2 class="title">Enter Your Nickname</h2>
+      <input type="text" class="nick-name-input" v-model="nickName" ref="nickNameInput" maxlength="20" />
+      <!-- <p class="has-code">我有邀请码！&gt;&gt;</p> -->
+      <br>
+      <el-button
+        type="primary"
+        class="link-start"
+        :class="{ 'link-start-with-animation': nickName }"
+        :disabled="!nickName"
+        @click="linkStart"
+      >LINK START</el-button>
     </div>
   </div>
 </template>
+
 <script>
-import * as types from '@/store/types/accountTypes'
-
 export default {
-  data: () =>({
-    formData: {
-      username: '',
-      password: ''
+
+  data () {
+    return {
+      nickName: ''
     }
-  }),
-
+  },
   methods: {
-    login() {
-      const { username, password } = this.formData
-      if (!username || !password) {
-        return this.$Message.error('请输入用户名和密码')
-      }
-      this.$store
-        .dispatch(types.LOGIN_REQUEST, this.formData)
-        .then((res) => {
-          const { data } = res
-          const userImages = JSON.parse(localStorage.userImages || '{}')
-
-          userImages[data.userId] = data.userImage
-          localStorage.currentUser = JSON.stringify({
-            userId: data.userId,
-            username
-          })
-          localStorage.userImages = JSON.stringify(userImages)
-
-          this.$router.push('/message-list')
-        }, (err) => {
-          console.log(err)
-        })
+    linkStart() {
+      const { nickName } = this
+      window.localStorage.nickName = nickName
+      this.$router.push({ name: 'account.userCenter' })
     }
   },
 
+  mounted () {
+    this.$refs.nickNameInput.focus()
+  },
+
   created() {
-    if (localStorage.userInfo) {
-      this.$router.push('/message-list')
-    }
+    const { nickName } = window.localStorage
+
+    if (nickName) this.$router.push({ name: 'account.userCenter' })
   }
 }
 </script>
-<style lang="scss">
+<style lang="less" scoped>
 .login-content {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #342c3d;
-  background-image: url('../../assets/images/background.png');
-  background-size: cover;
-  background-position-y: bottom;
-  background-repeat: no-repeat;
+  text-align: center;
 
-  .login-form {
-    width: 341px;
-    border-radius: 10px;
-    position: absolute;
-    z-index: 100;
+  .login-body {
+    width: 1000px;
     display: inline-block;
-    top: 50%;
-    margin-top: -162.5px;
-    right: 50%;
-    margin-right: -170.5px;
+    margin-top: 125px;
 
-    .form-input {
-      display: inline-block;
-      width: 80%;
-      height: 44px;
-      padding: 0 20px;
-      margin-left: 10%;
-      margin-bottom: 30px;
+    .title {
+      font-size: 26px;
+      line-height: 32px;
+      color: #409EFF;
+    }
+
+    .nick-name-input {
+      width: 280px;
+      font-size: 26px;
+      margin-top: 10px;
       border: none;
+      border-bottom: 1px solid #409EFF;
       outline: none;
-      color: #fff;
-      border-radius: 4px;
-      background: none;
-      border: 1px solid hsla(0,0%,100%,.27);
       text-align: center;
     }
 
-    .form-input:first-child {
+    .has-code {
+      color: #5f5f5f;
       margin-top: 30px;
+      text-indent: 180px;
     }
 
-    .form-btn {
-      width: 80%;
-      margin-left: 10%;
-      margin-bottom: 30px;
-      height: 44px;
-      color: #fff;
-      font-size: 18px;
-      background-color: #ea9463;
-      border: none;
-      border-radius: 5px;
+    .link-start {
+      margin-top: 40px;
+    }
+
+    @keyframes button-animation {
+      0% {
+        box-shadow: 0px 0px 4px #409eff;
+        text-shadow: 0 0 0 #fff;
+      }
+      50% {
+        box-shadow: 0px 0px 22px #409eff;
+        text-shadow: 0 0 4px #fff;
+      }
+      100% {
+        box-shadow: 0px 0px 4px #409eff;
+        text-shadow: 0 0 0 #fff;
+      }
+    }
+
+    .link-start-with-animation {
+      animation: button-animation 2s infinite linear;
     }
   }
 }

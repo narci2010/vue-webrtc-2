@@ -2,10 +2,7 @@ db.json
 .DS_Store
 .idea/
 .vscode/
-
-releases/
 dist/
-
 *.log
 coverage
 node_modules

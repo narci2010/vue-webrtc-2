@@ -4,9 +4,7 @@ var extract = require('extract-text-webpack-plugin').extract,
 var basicLoaders = ['css'];
 var LOADERS = {
   css: basicLoaders,
-  less: basicLoaders.concat('less'),
-  sass: basicLoaders.concat('sass?indentedSyntax=true'),
-  scss: basicLoaders.concat('sass')
+  less: basicLoaders.concat('less')
 };
 
 function ruleGen(ext, isForVueLoader) {

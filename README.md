@@ -1,2 +1,14 @@
-# vue-webrtc
-基于vue的webrtc项目（试探）
+# 安装与使用
+
+```
+$ npm install
+$ npm start
+```
+
+
+# 打包编译
+```
+$ npm run build
+```
+
+

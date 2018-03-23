@@ -1,33 +1,25 @@
 export default [
   {
     path: '/',
-    component (resolve) {
-      require(['@/views/account/'], resolve)
-    },
-    redirect: to => {
-      return '/login'
-    },
-    children: [
-      {
-        path: '/login',
-        name: 'login',
-        component (resolve) {
-          require(['@/views/account/login'], resolve)
-        }
-      }
-    ]
-  },
-  {
-    path: '/',
-    component (resolve) {
+    component(resolve) {
       require(['@/views/'], resolve)
     },
+    redirect: to => {
+      return '/account/login'
+    },
     children: [
       {
-        path: '/message-list',
-        name: 'message-list',
-        component (resolve) {
-          require(['@/views/messageList/'], resolve)
+        path: '/account/login',
+        name: 'account.login',
+        component(resolve) {
+          require(['@/views/account/login'], resolve)
+        }
+      },
+      {
+        path: '/account/user-center',
+        name: 'account.userCenter',
+        component(resolve) {
+          require(['@/views/userCenter/'], resolve)
         }
       }
     ]
