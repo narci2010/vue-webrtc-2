@@ -13,6 +13,9 @@
         @click="linkStart"
       >LINK START</el-button>
     </div>
+    <div class="animation-bg">
+
+    </div>
   </div>
 </template>
 
@@ -24,22 +27,29 @@ export default {
       nickName: ''
     }
   },
+
   methods: {
     linkStart() {
       const { nickName } = this
-      window.localStorage.nickName = nickName
-      this.$router.push({ name: 'account.userCenter' })
+
+      this.$XHR({
+        url: '/account/login',
+        body: { nickName }
+      }).then((res) => {
+        window.sessionStorage.nickName = nickName
+
+        this.$router.push({ name: 'account.userCenter' })
+      }, err => {
+        this.$notify.error({
+          title: '错误',
+          message: err
+        })
+      })
     }
   },
 
   mounted () {
     this.$refs.nickNameInput.focus()
-  },
-
-  created() {
-    const { nickName } = window.localStorage
-
-    if (nickName) this.$router.push({ name: 'account.userCenter' })
   }
 }
 </script>

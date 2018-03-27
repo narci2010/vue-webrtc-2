@@ -41,6 +41,7 @@ export default {
 
   methods: {
     startVideo() {
+      console.log(111)
       const { video, audio } = this
       const { videoTag, videoTag2 } = this.$refs
 
@@ -81,10 +82,10 @@ export default {
     this.startVideo()
     this.socket.on('message', data => {
       switch (data.event) {
-        case 'newMemberIn':
-          this.connectedUser = data.userName
+        case 'newUserIn':
+          this.connectedUser = data.name
 
-          console.log('member in, send offer!')
+          console.log('new user in, send offer!')
 
           peerConn.createOffer(offer => {
             this.socket.send({
@@ -117,7 +118,7 @@ export default {
         break
 
         case 'answer':
-          console.log('got answer!', new RTCSessionDescription(data.answer))
+          console.log('got answer!')
           peerConn.setRemoteDescription(new RTCSessionDescription(data.answer))
         break
 

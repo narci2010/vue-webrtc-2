@@ -1,55 +1,86 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
 const http = require('http')
 const IO = require('socket.io')
-
 const server = http.createServer(app).listen(12345)
-
 const io = IO(server)
+
+// 普通请求部分
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// set json header
+app.use(function(req, res, next) {
+  res.contentType('application/json')
+  req.allUsers = allUsers
+  next()
+})
+
+const httpCtrl = require('./controllers/httpCtrl')
+
+app.use('/', httpCtrl)
+
+app.listen(12346)
 
 // 所有用户
 const allUsers = {}
 // 所有客户端
 const allSockets = {}
 
-const roomList = {}
-
 io.on('connect', function (socket) {
   let user = ''
-  let room = ''
   let conn = ''
 
   socket.on('message', function(data) {
 
     switch (data.event) {
-      // 新用户加入
-      case 'newMember':
-        user = data.name
-        // 昵称重复
-        if (allUsers[user]) {
-          sendTo(socket, {
-            event: 'newMember',
-            message: '该用户名已存在',
-            success: false
-          })
-        } else {
-          allUsers[user] = true
-          socket.name = user
-          socket.users = []
-          allSockets[user] = socket
-          Object.keys(allUsers).forEach(item => {
-            if (allUsers[item] && item !== user) {
-              conn = allSockets[item]
-              socket.otherName = item
-
-              sendTo(conn, {
-                event: 'newMemberIn',
-                userName: user
-              })
-            }
-          })
+      case 'join':
+        sendTo(socket, {
+          event: 'join',
+          success: !allUsers[data.name],
+          name: data.name
+        })
+        if (!allUsers[data.name]) {
+          allUsers[data.name] = 'no room'
+          allSockets[data.name] = socket
         }
       break
+      // 加入房间
+      case 'enterRoom':
+        const { roomCode, name } = data
+        const users = Object.values(allUsers).filter(code => code === roomCode)
+        let message = ''
+
+        if (users.length <= 1) {
+          if (users.length === 1) {
+            const otherName = Object.keys(allUsers).find(userName => allUsers[userName] === roomCode)
+            sendTo(allSockets[otherName], {
+              event: 'newUserIn',
+              name
+            })
+          }
+
+          allUsers[name] = roomCode
+          message = (users.length ? '进入' : '新建') + '房间成功'
+
+          // 暂存socket
+          user = name
+          conn = socket
+          socket.name = name
+          allSockets[name] = socket
+        } else {
+          message = '进入房间失败, 房间人数已满'
+        }
+
+        sendTo(socket, {
+          event: 'enterRoom',
+          message,
+          roomCode,
+          success: message.indexOf('成功') > 0
+        })
+      break
+
       case 'candidate':
         const conn1 = allSockets[data.connectedUser]
         const conn2 = allSockets[socket.otherName]

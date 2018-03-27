@@ -5,15 +5,14 @@
       <p @click="newRoomCode">生成房间邀请码！</p>
     </div>
     <video-view
+      v-if="roomCode"
       :socket="socket"
-      :room="room"
-      :user="nickName"
-      :room-members="roomMembers"
     ></video-view>
   </div>
 </template>
 <script>
 const socket = io.connect('https://ashshen.cc:5567/')
+// const socket = io.connect('https://192.168.26.157:445/')
 import crypto from 'crypto'
 import VideoView from './videoView'
 
@@ -24,10 +23,8 @@ export default {
   data() {
     return {
       socket,
-      nickName: window.localStorage.nickName || '',
-      inviteCode: '',
-      room: '',
-      roomMembers: []
+      nickName: window.sessionStorage.nickName,
+      roomCode: ''
     }
   },
 
@@ -39,6 +36,14 @@ export default {
     },
 
     newRoomCode() {
+      const { nickName, send } = this
+      const roomCode = this.md5(nickName + new Date().valueOf())
+
+      send({
+        event: 'enterRoom',
+        roomCode,
+        name: nickName
+      })
     },
 
     send(message, so = socket) {
@@ -53,19 +58,36 @@ export default {
 
     if (!nickName) return this.$router.push({ name: 'account.login' })
 
-    setTimeout(() => {
-      send({ event: 'newMember', name: nickName })
-    }, 3000)
+    send({
+      event: 'join',
+      name: nickName
+    })
 
     socket.on('message', data => {
       switch (data.event) {
-        case 'newMember':
+        case 'join':
           if (!data.success) {
+            this.$notify.error({
+              title: '错误',
+              message: '该昵称已被占用'
+            })
+
+            window.sessionStorage.nickName = ''
+            this.$router.push({ name: 'account.login' })
+          }
+        break
+        case 'enterRoom':
+          if (data.success) {
+            this.$notify.success({
+              title: '成功',
+              message: data.message
+            })
+            this.roomCode = data.roomCode
+          } else {
             this.$notify.error({
               title: '错误',
               message: data.message
             })
-            this.$router.push({ name: 'account.login' })
           }
         break
       }

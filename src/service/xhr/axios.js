@@ -34,8 +34,8 @@ const xhr = ({ method = 'get', url, body = null}) => {
         return reject(errorInfo)
       }
       resolve(res.data || {})
-    }).catch(() => {
-      // console.error('request error: %s', err)
+    }).catch(err => {
+      console.error('request error: %s', err)
       reject('请求失败')
     })
   })
