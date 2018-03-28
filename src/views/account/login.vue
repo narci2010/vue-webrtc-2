@@ -2,8 +2,14 @@
   <div class="login-content">
     <div class="login-body">
       <h2 class="title">Enter Your Nickname</h2>
-      <input type="text" class="nick-name-input" v-model="nickName" ref="nickNameInput" maxlength="20" />
-      <!-- <p class="has-code">我有邀请码！&gt;&gt;</p> -->
+      <input
+        type="text"
+        class="nick-name-input"
+        v-model="nickName"
+        ref="nickNameInput"
+        maxlength="20"
+        @keyup.enter="linkStart"
+      />
       <br>
       <el-button
         type="primary"
@@ -31,6 +37,8 @@ export default {
   methods: {
     linkStart() {
       const { nickName } = this
+
+      if (!nickName) return false
 
       this.$XHR({
         url: '/account/login',

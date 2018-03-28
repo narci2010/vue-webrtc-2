@@ -44,25 +44,29 @@ io.on('connect', function (socket) {
         if (!allUsers[data.name]) {
           allUsers[data.name] = 'no room'
           allSockets[data.name] = socket
+          socket.name = data.name
         }
       break
       // 加入房间
       case 'enterRoom':
-        const { roomCode, name } = data
+        const { roomCode, name, type } = data
         const users = Object.values(allUsers).filter(code => code === roomCode)
         let message = ''
 
         if (users.length <= 1) {
           if (users.length === 1) {
             const otherName = Object.keys(allUsers).find(userName => allUsers[userName] === roomCode)
+
             sendTo(allSockets[otherName], {
               event: 'newUserIn',
               name
             })
+          } else if (type === 'join') {
+            message = '进入房间失败, 房间不存在'
+          } else {
+            allUsers[name] = roomCode
+            message = (users.length ? '进入' : '新建') + '房间成功'
           }
-
-          allUsers[name] = roomCode
-          message = (users.length ? '进入' : '新建') + '房间成功'
 
           // 暂存socket
           user = name

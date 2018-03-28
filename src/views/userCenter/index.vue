@@ -2,7 +2,33 @@
   <div class="user-center">
     <div class="user-center-main">
       <p>Welcome，{{nickName}}</p>
-      <p @click="newRoomCode">生成房间邀请码！</p>
+      <p>您可以：</p>
+      <p>
+        <el-button
+          type="primary"
+          :disabled="!nickName"
+          @click="newRoomCode"
+        >生成房间邀请码</el-button>
+        或者
+        <el-button
+          type="primary"
+          :disabled="!nickName"
+          @click="showInput"
+        >填写邀请码</el-button>
+        <el-input
+          v-model="roomNum"
+          placeholder="请输入32位邀请码"
+          :maxlength="32"
+          v-show="showRoomInput"
+          class="room-code-input"
+        ></el-input>
+        <el-button
+          type="primary"
+          :disabled="!nickName"
+          @click="confirmJoin"
+        >确定</el-button>
+      </p>
+      <p v-show="roomCode">当前所在房间邀请码为：{{ roomCode }}</p>
     </div>
     <video-view
       v-if="roomCode"
@@ -11,8 +37,8 @@
   </div>
 </template>
 <script>
-const socket = io.connect('https://ashshen.cc:5567/')
-// const socket = io.connect('https://192.168.26.157:445/')
+// const socket = io.connect('https://ashshen.cc:5567/')
+const socket = io.connect('https://192.168.26.157:445/')
 import crypto from 'crypto'
 import VideoView from './videoView'
 
@@ -24,7 +50,9 @@ export default {
     return {
       socket,
       nickName: window.sessionStorage.nickName,
-      roomCode: ''
+      roomCode: '',
+      roomNum: '',
+      showRoomInput: false
     }
   },
 
@@ -42,13 +70,36 @@ export default {
       send({
         event: 'enterRoom',
         roomCode,
-        name: nickName
+        name: nickName,
+        type: 'create'
       })
     },
 
     send(message, so = socket) {
       if (message) {
         so.send(message)
+      }
+    },
+
+    showInput() {
+      this.showRoomInput = true
+    },
+
+    confirmJoin() {
+      const { nickName, roomNum, send } = this
+
+      if (roomNum.length !== 32) {
+        this.$notify.error({
+          title: '错误',
+          message: '邀请码为32位'
+        })
+      } else {
+        send({
+          event: 'enterRoom',
+          roomCode: roomNum,
+          name: nickName,
+          type: 'join'
+        })
       }
     }
   },
@@ -58,20 +109,17 @@ export default {
 
     if (!nickName) return this.$router.push({ name: 'account.login' })
 
-    send({
-      event: 'join',
-      name: nickName
-    })
+    setTimeout(() => {
+      send({
+        event: 'join',
+        name: nickName
+      })
+    }, 500)
 
     socket.on('message', data => {
       switch (data.event) {
         case 'join':
           if (!data.success) {
-            this.$notify.error({
-              title: '错误',
-              message: '该昵称已被占用'
-            })
-
             window.sessionStorage.nickName = ''
             this.$router.push({ name: 'account.login' })
           }
@@ -83,6 +131,7 @@ export default {
               message: data.message
             })
             this.roomCode = data.roomCode
+            this.showRoomInput = false
           } else {
             this.$notify.error({
               title: '错误',
@@ -99,13 +148,13 @@ export default {
 
 <style lang="less" scoped>
 .user-center {
-  text-align: center;
 
   .user-center-main {
-    display: inline-block;
-    text-align: left;
-    margin-top: 120px;
-    width: 1000px;
+    margin: 20px;
+  }
+
+  .room-code-input {
+    width: 300px;
   }
 }
 </style>

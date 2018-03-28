@@ -41,7 +41,6 @@ export default {
 
   methods: {
     startVideo() {
-      console.log(111)
       const { video, audio } = this
       const { videoTag, videoTag2 } = this.$refs
 
