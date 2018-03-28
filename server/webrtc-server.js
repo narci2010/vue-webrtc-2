@@ -28,6 +28,8 @@ const allUsers = {}
 // 所有客户端
 const allSockets = {}
 
+io.origins(['https://ashshen.cc:5566'])
+
 io.on('connect', function (socket) {
   let user = ''
   let conn = ''
