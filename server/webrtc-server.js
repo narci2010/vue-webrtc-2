@@ -106,7 +106,6 @@ io.on('connect', function (socket) {
       case 'offer':
         // if UserB exists then send him offer details
         conn = allSockets[data.connectedUser]
-        allUsers[user] = false
         if (conn != null) {
           // setting that UserA connected with UserB
           socket.otherName = data.connectedUser
@@ -153,17 +152,17 @@ io.on('connect', function (socket) {
     if (socket.name) {
       delete allUsers[socket.name]
       delete allSockets[socket.name]
-      if (socket.otherName) {
-        console.log('Disconnecting from ', socket.name)
-        const conn = allSockets[socket.otherName]
-        allUsers[socket.otherName] = true
-        socket.otherName = null
-        if (conn != null) {
-          sendTo(conn, {
-            type: 'leave'
-          })
-        }
-      }
+      // if (socket.otherName) {
+      //   console.log('Disconnecting from ', socket.name)
+      //   const conn = allSockets[socket.otherName]
+      //   allUsers[socket.otherName] = true
+      //   socket.otherName = null
+      //   if (conn != null) {
+      //     sendTo(conn, {
+      //       type: 'leave'
+      //     })
+      //   }
+      // }
     }
   })
 })

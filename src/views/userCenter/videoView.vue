@@ -84,12 +84,14 @@ export default {
         case 'newUserIn':
           this.connectedUser = data.name
 
-          console.log('new user in, send offer!')
+          console.log('new user in, user name', data.name)
 
           peerConn.createOffer(offer => {
+            console.log('send offer to', this.connectedUser)
+
             this.socket.send({
               event: 'offer',
-              offer: offer,
+              offer,
               connectedUser: this.connectedUser
             })
             peerConn.setLocalDescription(offer)
@@ -99,16 +101,16 @@ export default {
         break
 
         case 'offer':
-          console.log('got offer!')
+          console.log('got offer from', data.name)
           peerConn.setRemoteDescription(new RTCSessionDescription(data.offer))
           // create an answer to an offer
           this.connectedUser = data.name
           peerConn.createAnswer(answer => {
             peerConn.setLocalDescription(answer)
-            console.log('send answer!')
+            console.log('send answer to', data.name)
             this.socket.send({
               event: 'answer',
-              answer: answer,
+              answer,
               connectedUser: this.connectedUser
             })
           }, error => {
@@ -117,7 +119,7 @@ export default {
         break
 
         case 'answer':
-          console.log('got answer!')
+          console.log('got answer from', this.connectedUser)
           peerConn.setRemoteDescription(new RTCSessionDescription(data.answer))
         break
 
