@@ -26,7 +26,8 @@ window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSess
 export default {
 
   props: {
-    socket: Object
+    socket: Object,
+    userType: String
   },
 
   data() {
@@ -53,13 +54,16 @@ export default {
         videoTag.srcObject = stream
         videoTag.volume = 0
 
-        peerConn.addStream(stream)
+        stream.getTracks().forEach(track => {
+          console.log(123)
+          peerConn.addTrack(track, stream)
+        })
       }, err => {
         console.log('error: ', err)
       })
 
-      peerConn.onaddstream = e => {
-        videoTag2.srcObject = e.stream
+      peerConn.ontrack = e => {
+        videoTag2.srcObject = e.streams[0]
       }
 
       peerConn.onicecandidate = event => {
@@ -79,6 +83,9 @@ export default {
 
   mounted() {
     this.startVideo()
+  },
+
+  created() {
     this.socket.on('message', data => {
       switch (data.event) {
         case 'newUserIn':
@@ -88,7 +95,6 @@ export default {
 
           peerConn.createOffer(offer => {
             console.log('send offer to', this.connectedUser)
-
             this.socket.send({
               event: 'offer',
               offer,
@@ -106,13 +112,13 @@ export default {
           // create an answer to an offer
           this.connectedUser = data.name
           peerConn.createAnswer(answer => {
-            peerConn.setLocalDescription(answer)
             console.log('send answer to', data.name)
             this.socket.send({
               event: 'answer',
               answer,
               connectedUser: this.connectedUser
             })
+            peerConn.setLocalDescription(answer)
           }, error => {
               console.log('Error when creating an answer', error)
           })

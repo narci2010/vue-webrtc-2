@@ -20,6 +20,7 @@
           placeholder="请输入32位邀请码"
           :maxlength="32"
           v-show="showRoomInput"
+          ref="show-room-input"
           class="room-code-input"
         ></el-input>
         <el-button
@@ -31,14 +32,14 @@
       <p v-show="roomCode">当前所在房间邀请码为：{{ roomCode }}</p>
     </div>
     <video-view
-      v-if="roomCode"
       :socket="socket"
+      :user-type="userType"
     ></video-view>
   </div>
 </template>
 <script>
 const socket = io.connect('https://ashshen.cc:5566/')
-// const socket = io.connect('https://192.168.26.157/')
+// const socket = io.connect('https://192.168.99.235/')
 import crypto from 'crypto'
 import VideoView from './videoView'
 
@@ -52,7 +53,8 @@ export default {
       nickName: window.sessionStorage.nickName,
       roomCode: '',
       roomNum: '',
-      showRoomInput: false
+      showRoomInput: false,
+      userType: 'creater'
     }
   },
 
@@ -64,6 +66,8 @@ export default {
     },
 
     newRoomCode() {
+      this.roomCode = ''
+
       const { nickName, send } = this
       const roomCode = this.md5(nickName + new Date().valueOf())
 
@@ -73,6 +77,7 @@ export default {
         name: nickName,
         type: 'create'
       })
+      this.userType = 'creater'
     },
 
     send(message, so = socket) {
@@ -83,6 +88,9 @@ export default {
 
     showInput() {
       this.showRoomInput = true
+      this.$nextTick(() => {
+        this.$refs['show-room-input'].focus()
+      })
     },
 
     confirmJoin() {
@@ -94,6 +102,7 @@ export default {
           message: '邀请码为32位'
         })
       } else {
+        this.userType = 'join'
         send({
           event: 'enterRoom',
           roomCode: roomNum,
