@@ -59,11 +59,16 @@ io.on('connect', function (socket) {
               event: 'newUserIn',
               name
             })
-          } else if (type === 'join') {
-            message = '进入房间失败, 房间不存在'
-          } else {
+
             allUsers[name] = roomCode
-            message = (users.length ? '进入' : '新建') + '房间成功'
+            message = '进入房间成功'
+          } else {
+            if (type === 'join') {
+              message = '进入房间失败, 房间不存在'
+            } else {
+              allUsers[name] = roomCode
+              message = '创建房间成功'
+            }
           }
 
           // 暂存socket
@@ -149,7 +154,7 @@ io.on('connect', function (socket) {
       delete allUsers[socket.name]
       delete allSockets[socket.name]
       if (socket.otherName) {
-        console.log('Disconnecting from ', socket.otherName)
+        console.log('Disconnecting from ', socket.name)
         const conn = allSockets[socket.otherName]
         allUsers[socket.otherName] = true
         socket.otherName = null
