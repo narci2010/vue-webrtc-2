@@ -37,8 +37,8 @@
   </div>
 </template>
 <script>
-const socket = io.connect('https://121.41.98.44:5567/')
-// const socket = io.connect('https://192.168.26.157:445/')
+const socket = io.connect('https://121.41.98.44:5566/')
+// const socket = io.connect('https://192.168.26.157/')
 import crypto from 'crypto'
 import VideoView from './videoView'
 

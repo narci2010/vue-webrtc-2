@@ -1,10 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const http = require('http')
 const IO = require('socket.io')
-const server = http.createServer(app).listen(12345)
-const io = IO(server)
+const io = IO.listen(12345)
 
 // 普通请求部分
 app.use(bodyParser.json())
@@ -27,8 +25,6 @@ app.listen(12346)
 const allUsers = {}
 // 所有客户端
 const allSockets = {}
-
-io.origins(['https://ashshen.cc:5566'])
 
 io.on('connect', function (socket) {
   let user = ''
