@@ -48,7 +48,7 @@ io.on('connect', function (socket) {
       // 加入房间
       case 'enterRoom':
         const { roomCode, name, type } = data
-        const users = Object.values(allUsers).filter(code => code === roomCode)
+        const users = Object.keys(allUsers).filter(key => allUsers[key] === roomCode)
         let message = ''
 
         if (users.length <= 1) {
