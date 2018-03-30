@@ -1,8 +1,22 @@
 <template>
   <div>
     <!-- <router-view transition="fade" transition-mode="out-in"></router-view> -->
-    <video class="video" ref="videoTag" autoplay></video>
-    <video class="video" ref="videoTag2" autoplay></video>
+    <video
+      class="video"
+      ref="videoTag"
+      autoplay
+      playsinline
+      webkit-playsinline="true"
+      x5-video-player-type="h5"
+    ></video>
+    <video
+      class="video"
+      ref="videoTag2"
+      autoplay
+      playsinline
+      webkit-playsinline="true"
+      x5-video-player-type="h5"
+    ></video>
   </div>
 </template>
 <script>
@@ -26,8 +40,7 @@ window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSess
 export default {
 
   props: {
-    socket: Object,
-    userType: String
+    socket: Object
   },
 
   data() {

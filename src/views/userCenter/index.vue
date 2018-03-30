@@ -8,16 +8,16 @@
           type="primary"
           :disabled="!nickName"
           @click="newRoomCode"
-        >生成房间邀请码</el-button>
+        >生成房间码</el-button>
         或者
         <el-button
           type="primary"
           :disabled="!nickName"
           @click="showInput"
-        >填写邀请码</el-button>
+        >自定义房间码</el-button>
         <el-input
           v-model="roomNum"
-          placeholder="请输入32位邀请码"
+          placeholder="请输入房间码"
           :maxlength="32"
           v-show="showRoomInput"
           ref="show-room-input"
@@ -33,7 +33,6 @@
     </div>
     <video-view
       :socket="socket"
-      :user-type="userType"
     ></video-view>
   </div>
 </template>
@@ -53,8 +52,7 @@ export default {
       nickName: window.sessionStorage.nickName,
       roomCode: '',
       roomNum: '',
-      showRoomInput: false,
-      userType: 'creater'
+      showRoomInput: false
     }
   },
 
@@ -74,10 +72,8 @@ export default {
       send({
         event: 'enterRoom',
         roomCode,
-        name: nickName,
-        type: 'create'
+        name: nickName
       })
-      this.userType = 'creater'
     },
 
     send(message, so = socket) {
@@ -96,18 +92,16 @@ export default {
     confirmJoin() {
       const { nickName, roomNum, send } = this
 
-      if (roomNum.length !== 32) {
+      if (roomNum.length > 32) {
         this.$notify.error({
           title: '错误',
-          message: '邀请码为32位'
+          message: '房间码最大为32位'
         })
       } else {
-        this.userType = 'join'
         send({
           event: 'enterRoom',
           roomCode: roomNum,
-          name: nickName,
-          type: 'join'
+          name: nickName
         })
       }
     }

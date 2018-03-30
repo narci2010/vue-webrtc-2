@@ -115,6 +115,12 @@ export default {
       animation: button-animation 2s infinite linear;
     }
   }
+
+  @media screen and ( max-width: 500px ) {
+    .login-body {
+      width: 100%;
+    }
+  }
 }
 </style>
 

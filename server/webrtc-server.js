@@ -47,7 +47,7 @@ io.on('connect', function (socket) {
       break
       // 加入房间
       case 'enterRoom':
-        const { roomCode, name, type } = data
+        const { roomCode, name } = data
         const users = Object.keys(allUsers).filter(key => allUsers[key] === roomCode)
         let message = ''
 
@@ -63,12 +63,8 @@ io.on('connect', function (socket) {
             allUsers[name] = roomCode
             message = '进入房间成功'
           } else {
-            if (type === 'join') {
-              message = '进入房间失败, 房间不存在'
-            } else {
-              allUsers[name] = roomCode
-              message = '创建房间成功'
-            }
+            allUsers[name] = roomCode
+            message = '创建房间成功'
           }
 
           // 暂存socket
