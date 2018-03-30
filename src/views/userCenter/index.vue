@@ -30,6 +30,8 @@
         >确定</el-button>
       </p>
       <p v-show="roomCode">当前所在房间邀请码为：{{ roomCode }}</p>
+      <input type="file" accept="video/*;capture=camcorder" style="display: none;" >
+      <input type="file" accept="audio/*;capture=microphone" style="display: none;" >
     </div>
     <video-view
       :socket="socket"
