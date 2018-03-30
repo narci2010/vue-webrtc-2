@@ -18,7 +18,7 @@ const configuration = {
   ]
 }
 
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.mediaDevices.getUserMedia
 window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection
 window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate
 window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription
@@ -51,11 +51,15 @@ export default {
         video,
         audio
       }, stream => {
-        videoTag.srcObject = stream
+        if ('srcObject' in videoTag) {
+          videoTag.srcObject = stream
+        } else {
+          videoTag.src = window.URL.createObjectURL(stream)
+        }
+
         videoTag.volume = 0
 
         stream.getTracks().forEach(track => {
-          console.log(123)
           peerConn.addTrack(track, stream)
         })
       }, err => {

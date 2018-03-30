@@ -20,6 +20,7 @@
 <script src="static/plugins/moment.min.js"></script>
 <script src="static/plugins/axios.min.js"></script>
 <script src="static/plugins/socket.io.slim.js"></script>
+<script src="static/plugins/adapter-latest.js"></script>
 <!-- endbuild -->
 {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
 <script src="{%=o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
