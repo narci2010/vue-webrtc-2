@@ -80,7 +80,11 @@ export default {
       })
 
       peerConn.ontrack = e => {
-        videoTag2.srcObject = e.streams[0]
+        if ('srcObject' in videoTag) {
+          videoTag2.srcObject = e.streams[0]
+        } else {
+          videoTag2.src = window.URL.createObjectURL(e.streams[0])
+        }
       }
 
       peerConn.onicecandidate = event => {
@@ -157,7 +161,15 @@ export default {
 
 <style lang="less" scoped>
 .video {
-  width: 400px;
-  height: 225px;
+  width: 49%;
+  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+@media screen and (max-width: 800px) {
+  .video {
+    margin: 0 0 100px 25%;
+    display: block;
+  }
 }
 </style>

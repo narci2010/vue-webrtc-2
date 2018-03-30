@@ -2,6 +2,7 @@
   <div class="user-center">
     <div class="user-center-main">
       <p>Welcome，{{nickName}}</p>
+      <br>
       <p>您可以：</p>
       <p>
         <el-button
@@ -9,7 +10,9 @@
           :disabled="!nickName"
           @click="newRoomCode"
         >生成房间码</el-button>
-        或者
+      </p>
+      <p>或者</p>
+      <p>
         <el-button
           type="primary"
           :disabled="!nickName"
@@ -23,7 +26,11 @@
           ref="show-room-input"
           class="room-code-input"
         ></el-input>
+      </p>
+      <br>
+      <p>
         <el-button
+          v-show="showRoomInput"
           type="primary"
           :disabled="!nickName"
           @click="confirmJoin"

@@ -54,12 +54,10 @@ io.on('connect', function (socket) {
         if (users.length <= 1) {
           if (users.length === 1) {
             const otherName = Object.keys(allUsers).find(userName => allUsers[userName] === roomCode)
-
             sendTo(allSockets[otherName], {
               event: 'newUserIn',
               name
             })
-
             allUsers[name] = roomCode
             message = '进入房间成功'
           } else {
