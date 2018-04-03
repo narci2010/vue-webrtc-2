@@ -45,7 +45,7 @@
 </template>
 <script>
 const socket = io.connect('https://ashshen.cc:5566/')
-// const socket = io.connect('https://192.168.99.235/')
+// const socket = io.connect('https://192.168.26.157/')
 import crypto from 'crypto'
 import VideoView from './videoView'
 
